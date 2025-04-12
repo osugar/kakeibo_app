@@ -20,7 +20,10 @@ def save_data(df):
 # --- ユーザー読み込み ---
 def load_users():
     if os.path.exists(USER_FILE):
-        return pd.read_csv(USER_FILE)
+        try:
+            return pd.read_csv(USER_FILE)
+        except pd.errors.EmptyDataError:
+            return pd.DataFrame(columns=["username", "password"])
     return pd.DataFrame(columns=["username", "password"])
 
 # --- ユーザー保存 ---
