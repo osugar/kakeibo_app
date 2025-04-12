@@ -51,8 +51,7 @@ def login_form():
                 st.session_state.logged_in = True
                 st.session_state.username = username
                 st.success(f"ようこそ、{username} さん！")
-                st.session_state.rerun = True
-                st.stop()
+                st.rerun()
             else:
                 st.error("ユーザー名またはパスワードが違います")
 
@@ -97,7 +96,7 @@ def app_main():
             if st.button("削除", key=f"del_{i}"):
                 df = df.drop(i).reset_index(drop=True)
                 save_data(df)
-                st.experimental_rerun()
+                st.rerun()
 
     st.subheader("📊 カテゴリ別合計")
     if not df.empty:
