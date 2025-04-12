@@ -10,7 +10,10 @@ COLUMNS = ["日付", "カテゴリ", "品目", "金額", "区分"]
 # --- データ読み込み ---
 def load_data():
     if os.path.exists(FILE_PATH):
-        return pd.read_csv(FILE_PATH, encoding="cp932")
+        try:
+            return pd.read_csv(FILE_PATH, encoding="cp932")
+        except pd.errors.EmptyDataError:
+            return pd.DataFrame(columns=COLUMNS)
     return pd.DataFrame(columns=COLUMNS)
 
 # --- データ保存 ---
