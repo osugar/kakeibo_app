@@ -49,9 +49,10 @@ def login_form():
                 st.warning("すべて入力してください")
             elif not users_df[(users_df.username == username) & (users_df.password == password)].empty:
                 st.session_state.logged_in = True
-                st.session_state.username = username
-                st.success(f"ようこそ、{username} さん！")
-                st.experimental_rerun()
+st.session_state.username = username
+st.success(f"ようこそ、{username} さん！")
+st.session_state.rerun = True
+st.stop()
             else:
                 st.error("ユーザー名またはパスワードが違います")
 
