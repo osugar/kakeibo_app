@@ -119,7 +119,7 @@ def app_main():
             st.metric("支出合計", f"{total_expense:,.0f} 円")
             st.metric("残額", f"{balance:,.0f} 円")
 
-    with st.expander("📆 月別残額の推移を表示", expanded=False):
+    with st.expander("📆 月別残額の推移を表示", expanded=True):
         if not df.empty:
             df["金額"] = pd.to_numeric(df["金額"], errors='coerce')
             df["日付"] = pd.to_datetime(df["日付"], errors='coerce')
