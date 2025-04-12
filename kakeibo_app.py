@@ -90,22 +90,22 @@ def app_main():
             save_data(df)
             st.success("保存しました！")
 
-    st.subheader("📋 データ一覧")
-    if df.empty:
-        st.info("データがまだありません。")
-    else:
-        for i, row in df.iterrows():
-            st.write(f"{row['日付']} | {row['カテゴリ']} | {row['品目']} | {row['金額']}円 | {row['区分']}")
-            if st.button("削除", key=f"del_{i}"):
-                df = df.drop(i).reset_index(drop=True)
-                save_data(df)
-                st.rerun()
+    with st.expander("📋 データ一覧を表示／非表示", expanded=False):
+        if df.empty:
+            st.info("データがまだありません。")
+        else:
+            for i, row in df.iterrows():
+                st.write(f"{row['日付']} | {row['カテゴリ']} | {row['品目']} | {row['金額']}円 | {row['区分']}")
+                if st.button("削除", key=f"del_{i}"):
+                    df = df.drop(i).reset_index(drop=True)
+                    save_data(df)
+                    st.rerun()
 
-    st.subheader("📊 カテゴリ別合計")
-    if not df.empty:
-        df["金額"] = pd.to_numeric(df["金額"], errors='coerce')
-        summary = df.groupby(["カテゴリ", "区分"])["金額"].sum().reset_index()
-        st.dataframe(summary)
+    with st.expander("📊 カテゴリ別合計を表示／非表示", expanded=False):
+        if not df.empty:
+            df["金額"] = pd.to_numeric(df["金額"], errors='coerce')
+            summary = df.groupby(["カテゴリ", "区分"])["金額"].sum().reset_index()
+            st.dataframe(summary)
 
 # --- 実行 ---
 if not st.session_state.logged_in:
