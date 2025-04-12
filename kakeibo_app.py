@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
 
 # --- 設定 ---
 FILE_PATH = "kakeibo.csv"
@@ -106,6 +107,31 @@ def app_main():
             df["金額"] = pd.to_numeric(df["金額"], errors='coerce')
             summary = df.groupby(["カテゴリ", "区分"])["金額"].sum().reset_index()
             st.dataframe(summary)
+
+    with st.expander("💰 残高を表示／非表示", expanded=False):
+        if not df.empty:
+            df["金額"] = pd.to_numeric(df["金額"], errors='coerce')
+            total_income = df[df["区分"] == "収入"]["金額"].sum()
+            total_expense = df[df["区分"] == "支出"]["金額"].sum()
+            balance = total_income - total_expense
+
+            st.metric("収入合計", f"{total_income:,.0f} 円")
+            st.metric("支出合計", f"{total_expense:,.0f} 円")
+            st.metric("残額", f"{balance:,.0f} 円")
+
+    with st.expander("📆 月別残額の推移を表示", expanded=False):
+        if not df.empty:
+            df["金額"] = pd.to_numeric(df["金額"], errors='coerce')
+            df["日付"] = pd.to_datetime(df["日付"], errors='coerce')
+            df = df.dropna(subset=["日付"])
+            df["年月"] = df["日付"].dt.to_period("M")
+
+            monthly = df.pivot_table(index="年月", columns="区分", values="金額", aggfunc="sum", fill_value=0)
+            monthly["残額"] = monthly.get("収入", 0) - monthly.get("支出", 0)
+            monthly = monthly.sort_index()
+
+            st.line_chart(monthly["残額"])
+            st.dataframe(monthly)
 
 # --- 実行 ---
 if not st.session_state.logged_in:
