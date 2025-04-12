@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
 
 # --- 設定 ---
 FILE_PATH = "kakeibo.csv"
