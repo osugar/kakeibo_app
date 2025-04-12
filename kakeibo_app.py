@@ -3,22 +3,27 @@ import pandas as pd
 import os
 
 # --- 設定 ---
-FILE_PATH = "kakeibo.csv"
 USER_FILE = "users.csv"
 COLUMNS = ["日付", "カテゴリ", "品目", "金額", "区分"]
 
+# --- ユーザーごとのファイルパス ---
+def get_user_file():
+    return f"kakeibo_{st.session_state.username}.csv"
+
 # --- データ読み込み ---
 def load_data():
-    if os.path.exists(FILE_PATH):
+    file_path = get_user_file()
+    if os.path.exists(file_path):
         try:
-            return pd.read_csv(FILE_PATH, encoding="cp932")
+            return pd.read_csv(file_path, encoding="cp932")
         except pd.errors.EmptyDataError:
             return pd.DataFrame(columns=COLUMNS)
     return pd.DataFrame(columns=COLUMNS)
 
 # --- データ保存 ---
 def save_data(df):
-    df.to_csv(FILE_PATH, index=False, encoding="cp932")
+    file_path = get_user_file()
+    df.to_csv(file_path, index=False, encoding="cp932")
 
 # --- ユーザー読み込み ---
 def load_users():
@@ -131,6 +136,12 @@ def app_main():
 
             st.line_chart(monthly["残額"])
             st.dataframe(monthly)
+
+    st.markdown("---")
+    if st.button("ログアウト", type="primary"):
+        st.session_state.logged_in = False
+        st.session_state.username = ""
+        st.rerun()
 
 # --- 実行 ---
 if not st.session_state.logged_in:
